@@ -31,6 +31,13 @@ class AppColors {
   // Standard UI Colors
   static const Color glassWhite = Color(0x1AFFFFFF); // 10% White
   static const Color glassBorder = Color(0x33FFFFFF); // 20% White
+
+  // --- ASSET PATHS ---
+  // Make sure these match your folder structure!
+  static const String logo = "assets/logo.png";
+  static const String cardCenter = "assets/card_center.png";
+  static const String cardLeft = "assets/card_left.png";
+  static const String cardRight = "assets/card_right.png";
 }
 
 class SkilliooApp extends StatelessWidget {
@@ -53,7 +60,7 @@ class SkilliooApp extends StatelessWidget {
 }
 
 // ==============================================================================
-// 1. SPLASH SCREEN (Typewriter Animation)
+// 1. SPLASH SCREEN
 // ==============================================================================
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -63,37 +70,28 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  String textToShow = "";
-  String fullText = "Skillioo";
-  int index = 0;
+  double opacity = 0.0;
 
   @override
   void initState() {
     super.initState();
-    startTypewriterAnimation();
-  }
+    // Fade in animation
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        opacity = 1.0;
+      });
+    });
 
-  void startTypewriterAnimation() {
-    Timer.periodic(const Duration(milliseconds: 150), (timer) {
-      if (index < fullText.length) {
-        setState(() {
-          textToShow += fullText[index];
-          index++;
-        });
-      } else {
-        timer.cancel();
-        // Wait 1 second then navigate
-        Future.delayed(const Duration(seconds: 1), () {
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (_, __, ___) => const WelcomeScreen(),
-              transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
-              transitionDuration: const Duration(milliseconds: 800),
-            ),
-          );
-        });
-      }
+    // Navigate after 3 seconds
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => const WelcomeScreen(),
+          transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+          transitionDuration: const Duration(milliseconds: 800),
+        ),
+      );
     });
   }
 
@@ -101,36 +99,10 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return GradientScaffold(
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Logo Icon
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: [Color(0xFF00E5FF), Color(0xFF2979FF)]),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(color: Colors.blue.withOpacity(0.5), blurRadius: 30, spreadRadius: 5)
-                  ]
-              ),
-              child: const Icon(Icons.play_arrow_rounded, size: 50, color: Colors.white),
-            ),
-            const SizedBox(height: 30),
-            // Typewriter Text
-            Text(
-              textToShow,
-              style: const TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2.0,
-                fontFamily: 'Courier',
-              ),
-            ),
-            const SizedBox(height: 10),
-            if (index == fullText.length)
-              const FadeInText(text: "INDIA'S FIRST TALENT HUB")
-          ],
+        child: AnimatedOpacity(
+          duration: const Duration(seconds: 1),
+          opacity: opacity,
+          child: Image.asset(AppColors.logo, width: 200, height: 200),
         ),
       ),
     );
@@ -138,7 +110,7 @@ class _SplashScreenState extends State<SplashScreen> {
 }
 
 // ==============================================================================
-// 2. WELCOME SCREEN (Card Stack Snapshot)
+// 2. WELCOME SCREEN
 // ==============================================================================
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -149,44 +121,29 @@ class WelcomeScreen extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 50),
-
-          // Top Logo
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.cyanAccent, width: 1.5),
-                    borderRadius: BorderRadius.circular(16),
-                    color: Colors.black.withOpacity(0.3)
-                ),
-                child: const Icon(Icons.play_circle_fill, size: 30, color: Colors.white),
-              ),
-              const SizedBox(height: 8),
-              const Text("Skillioo", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 1)),
-              const Text("INDIA'S FIRST TALENT HUB", style: TextStyle(fontSize: 8, color: Colors.cyanAccent)),
-            ],
-          ),
-
+          Image.asset(AppColors.logo, width: 100, height: 100),
           const Spacer(),
-
           // Card Stack
           SizedBox(
             height: 320,
             child: Stack(
               alignment: Alignment.center,
-              clipBehavior: Clip.none,
               children: [
-                _buildCard(angle: -0.15, scale: 0.85, offsetX: -90, color: AppColors.cardGreen.withOpacity(0.3), image: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?auto=format&fit=crop&q=80&w=300'),
-                _buildCard(angle: 0.15, scale: 0.85, offsetX: 90, color: AppColors.cardGreen.withOpacity(0.3), image: 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=300'),
-                _buildCard(angle: 0, scale: 1.0, offsetX: 0, color: Colors.cyanAccent.withOpacity(0.4), isCenter: true, image: 'https://images.unsplash.com/photo-1520423465871-08636dd766c3?auto=format&fit=crop&q=80&w=300'),
+                // Background Glow
+                Container(
+                  width: 250, height: 250,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(colors: [Colors.cyanAccent.withOpacity(0.2), Colors.transparent]),
+                  ),
+                ),
+                _buildCard(scale: 0.85, offsetX: -90, imagePath: AppColors.cardLeft, opacity: 0.6),
+                _buildCard(scale: 0.85, offsetX: 90, imagePath: AppColors.cardRight, opacity: 0.6),
+                _buildCard(scale: 1.15, offsetX: 0, imagePath: AppColors.cardCenter, opacity: 1.0),
               ],
             ),
           ),
-
           const Spacer(),
-
-          // Bottom Content
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
             child: Column(
@@ -199,26 +156,11 @@ class WelcomeScreen extends StatelessWidget {
                   style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.5),
                 ),
                 const SizedBox(height: 30),
-
-                // Let's Go Button (Special Style for this screen)
-                GestureDetector(
+                PrimaryButton(
+                  text: "Let's Go",
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const PhoneNumberScreen()));
                   },
-                  child: Container(
-                    width: double.infinity,
-                    height: 55,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        gradient: const LinearGradient(
-                            colors: [Color(0xFF2E3A59), Color(0xFF6200EA)],
-                            begin: Alignment.centerLeft, end: Alignment.centerRight
-                        ),
-                        boxShadow: [BoxShadow(color: Colors.purple.withOpacity(0.4), blurRadius: 10, offset: const Offset(0, 4))],
-                        border: Border.all(color: Colors.white.withOpacity(0.1))
-                    ),
-                    child: const Center(child: Text("Let's Go", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))),
-                  ),
                 ),
                 const SizedBox(height: 20),
               ],
@@ -229,47 +171,22 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCard({required double angle, required double scale, required double offsetX, required Color color, required String image, bool isCenter = false}) {
+  Widget _buildCard({required double scale, required double offsetX, required String imagePath, double opacity = 1.0}) {
     return Transform.translate(
       offset: Offset(offsetX, 0),
-      child: Transform.rotate(
-        angle: angle,
-        child: Transform.scale(
-          scale: scale,
+      child: Transform.scale(
+        scale: scale,
+        child: Opacity(
+          opacity: opacity,
           child: Container(
-            width: 180, height: 240,
+            width: 170, height: 250,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: color, width: 2),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20, spreadRadius: 2)],
-                image: DecorationImage(image: NetworkImage(image), fit: BoxFit.cover)
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20, spreadRadius: 5)],
             ),
-            child: Stack(
-              children: [
-                Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(22), gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withOpacity(0.8)]))),
-                Positioned(
-                  top: 15, left: 15,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(8)),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [Text("2.5M Views", style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold)), Text("2K Likes", style: TextStyle(fontSize: 7, color: Colors.white70))]),
-                  ),
-                ),
-                Positioned(
-                  bottom: 15, left: 15, right: 15,
-                  child: Column(
-                    children: [
-                      Row(children: const [CircleAvatar(radius: 8, backgroundImage: NetworkImage('https://i.pravatar.cc/100?img=5')), SizedBox(width: 5), Text("Lisa Singer", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold))]),
-                      if(isCenter) ...[
-                        const SizedBox(height: 8),
-                        Container(height: 3, width: double.infinity, decoration: BoxDecoration(color: Colors.white30, borderRadius: BorderRadius.circular(2)), child: FractionallySizedBox(alignment: Alignment.centerLeft, widthFactor: 0.6, child: Container(color: Colors.cyanAccent))),
-                        const SizedBox(height: 2),
-                        const Align(alignment: Alignment.centerRight, child: Text("1:25", style: TextStyle(fontSize: 7))),
-                      ]
-                    ],
-                  ),
-                )
-              ],
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Image.asset(imagePath, fit: BoxFit.cover),
             ),
           ),
         ),
@@ -283,26 +200,18 @@ class WelcomeScreen extends StatelessWidget {
 // ==============================================================================
 class PhoneNumberScreen extends StatefulWidget {
   const PhoneNumberScreen({super.key});
-
   @override
   State<PhoneNumberScreen> createState() => _PhoneNumberScreenState();
 }
 
 class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   String phoneNumber = "";
-  bool isError = false;
-
   void onKeyPressed(String value) {
     setState(() {
-      isError = false;
       if (value == 'backspace') {
         if (phoneNumber.isNotEmpty) phoneNumber = phoneNumber.substring(0, phoneNumber.length - 1);
       } else if (value == 'check') {
-        if (phoneNumber.length == 10) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const OTPScreen()));
-        } else {
-          isError = true;
-        }
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const OTPScreen()));
       } else {
         if (phoneNumber.length < 10) phoneNumber += value;
       }
@@ -324,30 +233,21 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                   const Text("Step: 1 of 2", style: TextStyle(color: AppColors.textGrey)),
                   const SizedBox(height: 10),
                   const Text("What's your number?", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  const Text("Promise we'll only use it to send your OTP.", style: TextStyle(color: AppColors.textGrey, fontSize: 13)),
                   const SizedBox(height: 40),
-
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                     decoration: BoxDecoration(
                       color: const Color(0xFF1E1B2E),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: isError ? Colors.red : Colors.transparent),
                     ),
                     child: Row(
                       children: [
                         const Text("91+  ", style: TextStyle(color: Colors.white54, fontSize: 20)),
-                        Text(
-                          phoneNumber.isEmpty ? "0000000000" : phoneNumber,
-                          style: TextStyle(fontSize: 20, letterSpacing: 1.5, color: phoneNumber.isEmpty ? Colors.white12 : Colors.white),
-                        ),
+                        Text(phoneNumber.isEmpty ? "0000000000" : phoneNumber, style: TextStyle(fontSize: 20, letterSpacing: 1.5, color: phoneNumber.isEmpty ? Colors.white12 : Colors.white)),
                       ],
                     ),
                   ),
-                  if(isError) const Padding(padding: EdgeInsets.only(top: 10), child: Text("Invalid number.", style: TextStyle(color: Colors.red, fontSize: 12))),
-
                   const Spacer(),
                   PrimaryButton(text: "Verify", onTap: () => onKeyPressed('check')),
                   const SizedBox(height: 30),
@@ -367,14 +267,11 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
 // ==============================================================================
 class OTPScreen extends StatefulWidget {
   const OTPScreen({super.key});
-
   @override
   State<OTPScreen> createState() => _OTPScreenState();
 }
-
 class _OTPScreenState extends State<OTPScreen> {
   String otp = "";
-
   void onKeyPressed(String value) {
     setState(() {
       if (value == 'backspace') {
@@ -386,7 +283,6 @@ class _OTPScreenState extends State<OTPScreen> {
       }
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return GradientScaffold(
@@ -402,10 +298,7 @@ class _OTPScreenState extends State<OTPScreen> {
                   const Text("Step: 2 of 2", style: TextStyle(color: AppColors.textGrey)),
                   const SizedBox(height: 10),
                   const Text("OTP Time!", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  const Text("Peep your phone and enter the code we just sent.", style: TextStyle(color: AppColors.textGrey, fontSize: 13)),
                   const SizedBox(height: 40),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(4, (index) {
@@ -415,7 +308,6 @@ class _OTPScreenState extends State<OTPScreen> {
                       );
                     }),
                   ),
-
                   const Spacer(),
                   PrimaryButton(text: "Verify", onTap: () => onKeyPressed('check')),
                   const SizedBox(height: 30),
@@ -438,7 +330,6 @@ class VerificationSuccessScreen extends StatefulWidget {
   @override
   State<VerificationSuccessScreen> createState() => _VerificationSuccessScreenState();
 }
-
 class _VerificationSuccessScreenState extends State<VerificationSuccessScreen> {
   @override
   void initState() {
@@ -454,11 +345,7 @@ class _VerificationSuccessScreenState extends State<VerificationSuccessScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blueAccent.withOpacity(0.2), border: Border.all(color: Colors.blueAccent, width: 2)),
-              child: const Icon(Icons.check, size: 50, color: Colors.blueAccent),
-            ),
+            Container(padding: const EdgeInsets.all(20), decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blueAccent.withOpacity(0.2), border: Border.all(color: Colors.blueAccent, width: 2)), child: const Icon(Icons.check, size: 50, color: Colors.blueAccent)),
             const SizedBox(height: 30),
             const Text("Verification Successful!", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           ],
@@ -499,54 +386,108 @@ class _PinSelectionScreenState extends State<PinSelectionScreen> {
     return GradientScaffold(
       child: Column(
         children: [
+          // Expanded -> SingleChildScrollView prevents Overflow
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40),
-              child: Column(
-                children: [
-                  const Icon(Icons.hub, size: 50, color: Colors.white),
-                  const SizedBox(height: 20),
-                  const Text("Welcome To Talent Hub", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  const Text("Choose your preferred authentication method", style: TextStyle(color: AppColors.textGrey, fontSize: 12)),
-                  const SizedBox(height: 30),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    Image.asset(AppColors.logo, width: 80, height: 80),
 
-                  // Toggle Switch
-                  Container(
-                    height: 50, padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(25)),
-                    child: Stack(
-                      children: [
-                        AnimatedAlign(
-                          duration: const Duration(milliseconds: 250),
-                          alignment: isBiometric ? Alignment.centerRight : Alignment.centerLeft,
-                          child: Container(width: (MediaQuery.of(context).size.width - 56) / 2, decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(25))),
-                        ),
-                        Row(children: [
-                          Expanded(child: GestureDetector(onTap: () => setState(() => isBiometric = false), child: const Center(child: Text("Pin", style: TextStyle(fontWeight: FontWeight.bold))))),
-                          Expanded(child: GestureDetector(onTap: () => setState(() => isBiometric = true), child: const Center(child: Text("Biometric", style: TextStyle(fontWeight: FontWeight.bold))))),
-                        ])
-                      ],
+                    const SizedBox(height: 20),
+                    const Text("Welcome To Talent Hub", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 5),
+                    const Text("Choose your preferred authentication method", style: TextStyle(color: AppColors.textGrey, fontSize: 12)),
+                    const SizedBox(height: 25),
+
+                    // Toggle Switch
+                    Container(
+                      height: 55, padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(30)),
+                      child: Stack(
+                        children: [
+                          AnimatedAlign(
+                            duration: const Duration(milliseconds: 250),
+                            alignment: isBiometric ? Alignment.centerRight : Alignment.centerLeft,
+                            child: Container(
+                                width: (MediaQuery.of(context).size.width - 56) / 2,
+                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(25))
+                            ),
+                          ),
+                          Row(children: [
+                            Expanded(child: GestureDetector(
+                                onTap: () => setState(() => isBiometric = false),
+                                child: Center(child: Text("Pin", style: TextStyle(fontWeight: FontWeight.bold, color: !isBiometric ? Colors.black : Colors.white)))
+                            )),
+                            Expanded(child: GestureDetector(
+                                onTap: () => setState(() => isBiometric = true),
+                                child: Center(child: Text("Biometric", style: TextStyle(fontWeight: FontWeight.bold, color: isBiometric ? Colors.black : Colors.white)))
+                            )),
+                          ])
+                        ],
+                      ),
                     ),
-                  ),
 
-                  const SizedBox(height: 40),
+                    const SizedBox(height: 30),
 
-                  if (!isBiometric) ...[
-                    const Text("Set Pin", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    const SizedBox(height: 20),
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: List.generate(4, (index) => Container(margin: const EdgeInsets.symmetric(horizontal: 10), width: 16, height: 16, decoration: BoxDecoration(color: pin.length > index ? Colors.white : Colors.white24, shape: BoxShape.circle)))),
-                  ] else ...[
-                    const Text("Biometric Authentication", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    const SizedBox(height: 20),
-                    const Icon(Icons.fingerprint, size: 80, color: Colors.blueAccent),
+                    if (!isBiometric) ...[
+                      const Text("Set Pin", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                      const SizedBox(height: 20),
+                      // Large Rounded Square Pins
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(4, (index) => Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                            width: 55, height: 55,
+                            decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: pin.length > index ? Colors.white : Colors.transparent, width: 1.5)
+                            ),
+                            child: Center(
+                                child: pin.length > index
+                                    ? Container(width: 12, height: 12, decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle))
+                                    : null
+                            ),
+                          ))
+                      ),
+                    ] else ...[
+                      const Text("Biometric Authentication", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      const SizedBox(height: 20),
+                      const Icon(Icons.fingerprint, size: 80, color: Colors.blueAccent),
+                    ],
+
+                    const SizedBox(height: 30),
+
+                    // Skip Button
+                    GestureDetector(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LanguageSelectionScreen())),
+                      child: Container(
+                        width: double.infinity,
+                        height: 55,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            gradient: const LinearGradient(
+                                colors: [Color(0xFF1F2937), Color(0xFF111827)],
+                                begin: Alignment.topCenter, end: Alignment.bottomCenter
+                            ),
+                            border: Border.all(color: Colors.white.withOpacity(0.1)),
+                            boxShadow: [
+                              BoxShadow(color: Colors.cyanAccent.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))
+                            ]
+                        ),
+                        child: const Center(child: Text("Skip", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))),
+                      ),
+                    ),
+                    const SizedBox(height: 20), // Bottom padding for scroll
                   ],
-
-                  const Spacer(),
-                  PrimaryButton(text: isBiometric ? "Continue" : "Skip", onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LanguageSelectionScreen()))),
-                ],
+                ),
               ),
             ),
           ),
+
           if(!isBiometric) CustomKeyboard(onKeyPressed: onKeyPressed, showCheck: false),
         ],
       ),
@@ -562,11 +503,9 @@ class LanguageSelectionScreen extends StatefulWidget {
   @override
   State<LanguageSelectionScreen> createState() => _LanguageSelectionScreenState();
 }
-
 class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
   int selectedIndex = 0;
   final List<String> languages = ["English", "Hindi", "Marathi", "Kannada", "Telugu"];
-
   @override
   Widget build(BuildContext context) {
     return GradientScaffold(
@@ -613,26 +552,6 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
 // ==============================================================================
 // HELPERS
 // ==============================================================================
-
-class FadeInText extends StatefulWidget {
-  final String text;
-  const FadeInText({super.key, required this.text});
-  @override
-  State<FadeInText> createState() => _FadeInTextState();
-}
-class _FadeInTextState extends State<FadeInText> with SingleTickerProviderStateMixin {
-  late AnimationController _ctrl;
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 800))..forward();
-  }
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(opacity: _ctrl, child: Text(widget.text, style: const TextStyle(fontSize: 10, color: Colors.white54, letterSpacing: 2)));
-  }
-}
-
 class GlassContainer extends StatelessWidget {
   final double? width;
   final double? height;
@@ -649,7 +568,6 @@ class GlassContainer extends StatelessWidget {
     );
   }
 }
-
 class GradientScaffold extends StatelessWidget {
   final Widget child;
   const GradientScaffold({super.key, required this.child});
@@ -671,7 +589,6 @@ class GradientScaffold extends StatelessWidget {
     );
   }
 }
-
 class PrimaryButton extends StatelessWidget {
   final String text;
   final VoidCallback onTap;
@@ -692,7 +609,6 @@ class PrimaryButton extends StatelessWidget {
     );
   }
 }
-
 class CustomKeyboard extends StatelessWidget {
   final Function(String) onKeyPressed;
   final bool showCheck;
