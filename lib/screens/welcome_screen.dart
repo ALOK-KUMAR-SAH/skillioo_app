@@ -20,15 +20,36 @@ class WelcomeScreen extends StatelessWidget {
               alignment: Alignment.center,
               children: [
                 Container(
-                  width: 250, height: 250,
+                  width: 250,
+                  height: 250,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: RadialGradient(colors: [Colors.cyanAccent.withOpacity(0.2), Colors.transparent]),
+                    gradient: RadialGradient(
+                      colors: [
+                        Colors.cyanAccent.withOpacity(0.2),
+                        Colors.transparent,
+                      ],
+                    ),
                   ),
                 ),
-                _buildCard(scale: 0.85, offsetX: -90, imagePath: AppColors.cardLeft, opacity: 0.6),
-                _buildCard(scale: 0.85, offsetX: 90, imagePath: AppColors.cardRight, opacity: 0.6),
-                _buildCard(scale: 1.15, offsetX: 0, imagePath: AppColors.cardCenter, opacity: 1.0),
+                _buildCard(
+                  scale: 0.85,
+                  offsetX: -90,
+                  imagePath: AppColors.cardLeft,
+                  opacity: 0.6,
+                ),
+                _buildCard(
+                  scale: 0.85,
+                  offsetX: 90,
+                  imagePath: AppColors.cardRight,
+                  opacity: 0.6,
+                ),
+                _buildCard(
+                  scale: 1.15,
+                  offsetX: 0,
+                  imagePath: AppColors.cardCenter,
+                  opacity: 1.0,
+                ),
               ],
             ),
           ),
@@ -37,17 +58,33 @@ class WelcomeScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
             child: Column(
               children: [
-                const Text("Welcome!", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white)),
+                const Text(
+                  "Welcome!",
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
                 const SizedBox(height: 16),
                 const Text(
-                  "We bring together a community of like-minded individuals and connections for top talent. Showcase your skills, build your network.",
+                  "We bring together a community of like-minded individuals and connections for top talent. Showcase your skills,  build your network, and land your dreams.",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.5),
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
+                    height: 1.5,
+                  ),
                 ),
                 const SizedBox(height: 30),
                 PrimaryButton(
                   text: "Let's Go",
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PhoneNumberScreen())),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PhoneNumberScreen(),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
               ],
@@ -58,7 +95,12 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCard({required double scale, required double offsetX, required String imagePath, double opacity = 1.0}) {
+  Widget _buildCard({
+    required double scale,
+    required double offsetX,
+    required String imagePath,
+    double opacity = 1.0,
+  }) {
     return Transform.translate(
       offset: Offset(offsetX, 0),
       child: Transform.scale(
@@ -66,10 +108,17 @@ class WelcomeScreen extends StatelessWidget {
         child: Opacity(
           opacity: opacity,
           child: Container(
-            width: 170, height: 250,
+            width: 170,
+            height: 250,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20, spreadRadius: 5)],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  blurRadius: 20,
+                  spreadRadius: 5,
+                ),
+              ],
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(24),

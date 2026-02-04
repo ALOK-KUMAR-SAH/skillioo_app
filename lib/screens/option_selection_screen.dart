@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_widgets.dart';
 import 'language_screen.dart';
+import 'profile_type_screen.dart'; // Import Profile Creation Flow
 
 class OptionSelectionScreen extends StatelessWidget {
   const OptionSelectionScreen({super.key});
@@ -37,14 +38,17 @@ class OptionSelectionScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // Option 2: Create Profile
+            // Option 2: Create Profile (Navigate to Profile Flow)
             _buildOptionCard(
               context,
               icon: Icons.person_add_alt_1,
               text: "Create Profile",
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Navigate to Profile Creation")),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileTypeScreen(),
+                  ),
                 );
               },
             ),
@@ -57,6 +61,7 @@ class OptionSelectionScreen extends StatelessWidget {
               icon: Icons.dashboard_customize,
               text: "Proceed To Dashboard",
               onTap: () {
+                // Placeholder for Dashboard
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Navigating to Dashboard...")),
                 );
@@ -68,6 +73,7 @@ class OptionSelectionScreen extends StatelessWidget {
     );
   }
 
+  // Reusable Card Widget for Options
   Widget _buildOptionCard(
     BuildContext context, {
     required IconData icon,
@@ -79,7 +85,7 @@ class OptionSelectionScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1), // Glass effect
+          color: Colors.white.withOpacity(0.1), // Glassmorphism effect
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: Colors.white.withOpacity(0.1)),
           boxShadow: [
@@ -92,7 +98,7 @@ class OptionSelectionScreen extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Icon Box
+            // Icon Container
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
@@ -102,7 +108,7 @@ class OptionSelectionScreen extends StatelessWidget {
               child: Icon(icon, color: const Color(0xFF00E5FF), size: 24),
             ),
             const SizedBox(width: 20),
-            // Text
+            // Text Label
             Expanded(
               child: Text(
                 text,

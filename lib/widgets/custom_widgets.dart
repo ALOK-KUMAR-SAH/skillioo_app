@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
 
-// 1. Gradient Background Scaffold
+// ==============================================================================
+// 1. GRADIENT SCAFFOLD
+// Wraps every screen with the app's signature dark purple/black gradient
+// ==============================================================================
 class GradientScaffold extends StatelessWidget {
   final Widget child;
   const GradientScaffold({super.key, required this.child});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset:
+          false, // Prevents pixel overflow when keyboard opens
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -26,13 +31,17 @@ class GradientScaffold extends StatelessWidget {
   }
 }
 
-// 2. Glass Container
+// ==============================================================================
+// 2. GLASS CONTAINER
+// Used for OTP boxes, Language pills, etc.
+// ==============================================================================
 class GlassContainer extends StatelessWidget {
   final double? width;
   final double? height;
   final double borderRadius;
   final Widget? child;
   final Color? color;
+
   const GlassContainer({
     super.key,
     this.width,
@@ -41,6 +50,7 @@ class GlassContainer extends StatelessWidget {
     this.child,
     this.color,
   });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -56,11 +66,16 @@ class GlassContainer extends StatelessWidget {
   }
 }
 
-// 3. Primary Button
+// ==============================================================================
+// 3. PRIMARY BUTTON
+// The main "Let's Go", "Continue", "Verify" button
+// ==============================================================================
 class PrimaryButton extends StatelessWidget {
   final String text;
   final VoidCallback onTap;
+
   const PrimaryButton({super.key, required this.text, required this.onTap});
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -70,7 +85,9 @@ class PrimaryButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 18),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+            colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)], // Purple/Indigo
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
           ),
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
@@ -96,15 +113,20 @@ class PrimaryButton extends StatelessWidget {
   }
 }
 
-// 4. Custom Keyboard
+// ==============================================================================
+// 4. CUSTOM KEYBOARD
+// The on-screen numeric keypad
+// ==============================================================================
 class CustomKeyboard extends StatelessWidget {
   final Function(String) onKeyPressed;
   final bool showCheck;
+
   const CustomKeyboard({
     super.key,
     required this.onKeyPressed,
     this.showCheck = true,
   });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -136,9 +158,10 @@ class CustomKeyboard extends StatelessWidget {
     bool isAction = key == 'check';
     bool isDelete = key == 'del';
     bool isSpacer = key == '-' || key == '_' || key == ',' || key == '.';
+
     return GestureDetector(
       onTap: () {
-        if (isSpacer && key != '.') return;
+        if (isSpacer && key != '.') return; // Disable spacers except dot
         if (isDelete) {
           onKeyPressed('backspace');
         } else {
@@ -169,6 +192,51 @@ class CustomKeyboard extends StatelessWidget {
                   color: isSpacer ? Colors.white24 : Colors.white,
                 ),
               ),
+      ),
+    );
+  }
+}
+
+// ==============================================================================
+// 5. GLASS TEXT FIELD
+// Input fields for Name, Email, Address screens
+// ==============================================================================
+class GlassTextField extends StatelessWidget {
+  final String hint;
+  final IconData? icon;
+  final int maxLines;
+  final TextInputType keyboardType;
+
+  const GlassTextField({
+    super.key,
+    required this.hint,
+    this.icon,
+    this.maxLines = 1,
+    this.keyboardType = TextInputType.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E1E2C), // Dark background matching Figma
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white12), // Subtle white border
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: TextField(
+        maxLines: maxLines,
+        keyboardType: keyboardType,
+        style: const TextStyle(color: Colors.white),
+        cursorColor: const Color(0xFF00E5FF), // Cyan cursor to match brand
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: hint,
+          hintStyle: const TextStyle(color: Colors.white38, fontSize: 14),
+          icon: icon != null
+              ? Icon(icon, color: Colors.white54, size: 20)
+              : null,
+        ),
       ),
     );
   }
