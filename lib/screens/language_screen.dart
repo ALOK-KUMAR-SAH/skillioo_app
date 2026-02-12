@@ -18,6 +18,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
     "Kannada",
     "Telugu",
     "Malayalam",
+    "Tamil"
   ];
 
   @override

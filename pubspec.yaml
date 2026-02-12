@@ -1,37 +1,34 @@
-name: skillioo_app
-description: "A new Flutter project."
-
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
-
+name: skillioo
+description: Talent Hub - Professional Networking App
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.10.7
-
+  sdk: ^3.5.0
+  flutter: ^3.24.0
 
 dependencies:
   flutter:
     sdk: flutter
-  local_auth: ^2.1.6
-  shared_preferences: ^2.2.2
-  provider: ^6.1.1  # For state management
-
-
   cupertino_icons: ^1.0.8
+  local_auth: ^2.3.0          # Biometric authentication
+  flutter_secure_storage: ^9.2.2  # Secure PIN storage
+  geolocator: ^13.0.1         # GPS location
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-
-  flutter_lints: ^6.0.0
+  flutter_lints: ^5.0.0
+  flutter_native_splash: ^2.4.1
 
 
 flutter:
-
-
   uses-material-design: true
-
   assets:
     - assets/
+
+flutter_native_splash:
+  color: "#4A00E0"
+  image: assets/logo.png
+  android_12:
+    color: "#4A00E0"
+  ios: true
